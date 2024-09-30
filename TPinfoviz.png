@@ -1,51 +1,16 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
-  <title>Generate PNG Image URL</title>
-  <!-- Include the Tableau JavaScript API -->
-  <script type='text/javascript' src='https://public.tableau.com/javascripts/api/tableau-2.min.js'></script>
-</head>
-<body>
-  <div id="tableauViz" style="width:1016px; height:991px;"></div>
+import requests
 
-  <!-- Button to trigger image URL generation -->
-  <button id="getImageButton">Get Image URL</button>
-  <p id="imageURL">Image URL will appear here.</p>
+# URL of the static PNG image from your Tableau visualization
+image_url = 'https://public.tableau.com/static/images/4S/4S3S89Y27/1.png'
 
-  <script type='text/javascript'>
-    var viz;
+# Send a GET request to fetch the image content
+response = requests.get(image_url)
 
-    function initViz() {
-      var containerDiv = document.getElementById("tableauViz");
-      var url = "https://public.tableau.com/views/shared/4S3S89Y27";
-
-      var options = {
-        hideTabs: true,
-        onFirstInteractive: function () {
-          console.log("Tableau Viz has finished loading.");
-        }
-      };
-
-      // Initialize the Tableau visualization
-      viz = new tableau.Viz(containerDiv, url, options);
-    }
-
-    // Wait for the window to load before initializing the viz
-    window.onload = initViz;
-
-    // Add an event listener to the button to get the image URL
-    document.getElementById("getImageButton").addEventListener("click", function() {
-      viz.getImageURLAsync().then(function(imageURL) {
-        // Display the image URL
-        document.getElementById("imageURL").innerText = imageURL;
-        console.log("Image URL:", imageURL);
-      }).catch(function(err) {
-        console.error("Error getting image URL:", err);
-      });
-    });
-  </script>
-</body>
-</html>
-
+# Check if the request was successful
+if response.status_code == 200:
+    # Save the image content to a file
+    with open('tableau_visualization.png', 'wb') as f:
+        f.write(response.content)
+    print('Image downloaded successfully: tableau_visualization.png')
+else:
+    print('Failed to retrieve the image. Status code:', response.status_code)
