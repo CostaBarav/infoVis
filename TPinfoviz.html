@@ -3,40 +3,49 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <title>hola</title>
+  <title>Generate PNG Image URL</title>
   <!-- Include the Tableau JavaScript API -->
-  <script type='text/javascript' src='https://public.tableau.com/javascripts/api/viz_v1.js'></script>
+  <script type='text/javascript' src='https://public.tableau.com/javascripts/api/tableau-2.min.js'></script>
 </head>
 <body>
-  <div class='tableauPlaceholder' id='viz1727097709644' style='position: relative'>
-    <noscript>
-      <a href='#'>
-        <img alt='Finanzas Personales' src='https://public.tableau.com/static/images/4S/4S3S89Y27/1_rss.png' style='border: none' />
-      </a>
-    </noscript>
-    <!-- Removed display:none to make the object visible -->
-    <object class='tableauViz'>
-      <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />
-      <param name='embed_code_version' value='3' />
-      <param name='path' value='shared/4S3S89Y27' />
-      <param name='toolbar' value='yes' />
-      <param name='static_image' value='https://public.tableau.com/static/images/4S/4S3S89Y27/1.png' />
-      <param name='animate_transition' value='yes' />
-      <param name='display_static_image' value='yes' />
-      <param name='display_spinner' value='yes' />
-      <param name='display_overlay' value='yes' />
-      <param name='display_count' value='yes' />
-      <param name='language' value='es-ES' />
-    </object>
-  </div>
+  <div id="tableauViz" style="width:1016px; height:991px;"></div>
+
+  <!-- Button to trigger image URL generation -->
+  <button id="getImageButton">Get Image URL</button>
+  <p id="imageURL">Image URL will appear here.</p>
+
   <script type='text/javascript'>
-    // Ensure the Tableau JavaScript API is loaded before running this script
-    window.onload = function() {
-      var divElement = document.getElementById('viz1727097709644');
-      var vizElement = divElement.getElementsByTagName('object')[0];
-      vizElement.style.width = '1016px';
-      vizElement.style.height = '991px';
-    };
+    var viz;
+
+    function initViz() {
+      var containerDiv = document.getElementById("tableauViz");
+      var url = "https://public.tableau.com/views/shared/4S3S89Y27";
+
+      var options = {
+        hideTabs: true,
+        onFirstInteractive: function () {
+          console.log("Tableau Viz has finished loading.");
+        }
+      };
+
+      // Initialize the Tableau visualization
+      viz = new tableau.Viz(containerDiv, url, options);
+    }
+
+    // Wait for the window to load before initializing the viz
+    window.onload = initViz;
+
+    // Add an event listener to the button to get the image URL
+    document.getElementById("getImageButton").addEventListener("click", function() {
+      viz.getImageURLAsync().then(function(imageURL) {
+        // Display the image URL
+        document.getElementById("imageURL").innerText = imageURL;
+        console.log("Image URL:", imageURL);
+      }).catch(function(err) {
+        console.error("Error getting image URL:", err);
+      });
+    });
   </script>
 </body>
 </html>
+
